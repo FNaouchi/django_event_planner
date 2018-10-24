@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{user.username}}'s Profile{% endblock %}
+{% block content %}
+  <header class="masthead text-center text-white">
+    <div class="masthead-content">
+      <div class="jumbotron">
+      <div class="container">
+        <h3 class="masthead-heading mb-0">{{user.username}}'s Profile</h3>
+        {% if profile.profile_picture %}
+          <img src="{{profile.profile_picture.url}}" class="rounded-circle " style="width:275px;height:250px;">
+        {% else %}
+          <img src="{% static 'img/03.jpg' %}" class="rounded-circle" style="width:275px;height:250px;">
+        {% endif %}
+        
+        <div class="row">
+          {% if request.user == user %}
+            <div class="col-md-4 mt-5">
+             <a href="{% url 'booked-events' %}" class="btn btn-outline-light btn-block">My Bookings</a>
+            </div>
+            <div class="col-md-4 mt-5">
+               <a href="#" class="btn btn-outline-light btn-block">Followers &nbsp;&nbsp;&nbsp;&nbsp;{{followers_number}}</a>
+            </div>
+            <div class="col-md-4 mt-5">
+               <a href="{% url 'history-events' user.id %}" class="btn btn-outline-light btn-block">History</a>
+            </div>
+          {% else %}
+            <div class="col-md-4 mt-5">
+             <a href="#" class="btn btn-outline-light btn-block">Rate</a>
+            </div>
+            <div class="col-md-4 mt-5">
+               <i onclick="follow_me({{user.id}})" class="btn btn-outline-light btn-block">
+                {% if following == True %}
+                    <span id="followers-{{user.id}}"> Unfollow </span> 
+                {% else %}
+                    <span id="followers-{{user.id}}"> follow </span> 
+                {% endif %}
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <span id="count-{{user.id}}"> {{followers_number}}</span>
+              </i>
+            </div>
+            <div class="col-md-4 mt-5">
+               <a href="{% url 'history-events' user.id %}" class="btn btn-outline-light btn-block">History</a>
+            </div>
+          {% endif %}
+          
+        </div>
+      </div>
+    </div>
+  </div>
+    <div class="bg-circle-1 bg-circle"></div>
+    <div class="bg-circle-2 bg-circle"></div>
+    <div class="bg-circle-3 bg-circle"></div>
+    <div class="bg-circle-4 bg-circle"></div>
+  </header>
+<br>
+
+<div class="container my-box mt-4">
+
+  <form action="{% url 'my-events' user.id %}">
+    <div class="input-group mb-3">
+      <input type="text" class="form-control" placeholder="Search" aria-label="Search" name="q" value="{{request.GET.q}}">
+      <div class="input-group-append">
+        <button class="btn btn-outline-secondary" type="submit">Search</button>
+      </div>
+    </div>
+  </form>
+    <br>
+    <br>
+    <h2 class="masthead-heading text-center text-white">My Upcoming Events</h2>
+    {% for event in events %}
+      <a href="{% url 'detail-event' event.id %}">
+        <div class="col-md-12 mt-5">
+            <div class="card my-card">
+                {% if event.logo %}
+                <img class="card-img-top" src="{{event.logo.url}}" alt="Lovely, isn't it?">
+                {% endif %}
+                <div class="card-body">
+                </a>
+                    <h5 class="card-title">{{event.name}}
+                    <h5 class="card-title float-right">
+                        {% if event.price == 0 %}
+                            It's FREE!
+                        {% else %}
+                           {{event.price}} KD
+                        {% endif %}
+                    </h5>
+                    </h5>
+                    <p class="card-text">
+                      <div class="float-left">
+                          {{event.description}}<br>
+                          Location: {{event.location}}<br>
+                          Available Tickets: {% if event.available_tickets == 0 %}We ran out of tickets!{% else %}{{event.available_tickets}}{% endif %}<br>
+                          Date: {{event.date}}<br>
+                          Time: {{event.starting_time}}<br>
+                          Event Type: {{event.event_type}}<br>
+                      </div>
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% if request.user == event.owner %}
+        <div class="card-body">
+          <div class="row text-center">
+      
+          <div class="col-md-6">
+             <a href="{% url 'update-event' event.id %}" class="btn btn-outline-primary btn-block">Update</a>
+          </div>
+          <div class="col-md-6 mb-5">
+             <a href="{% url 'delete-event' event.id %}" class="btn btn-outline-danger btn-block">Delete</a>
+          </div>
+        </div>
+  </div>  
+  {% endif %}
+    {% endfor %}
+    <br>
+    <br>
+</div>
+
+
+
+
+<script type="text/javascript">
+    function follow_me(user_id) {
+        let text = "#followers-"+user_id
+        let count = "#count-"+user_id
+        $.ajax(
+            {
+                type:'GET',
+                url: '/profile/'+user_id+'/follow/',
+                error: function(){
+                    console.log('error');
+                },
+                success: function(data){
+                    if(data.action==="follow"){
+                        $(text).text("Unfollow")
+                    }else{
+                        $(text).text("Follow")
+                    }
+                    $(count).text(data.followers_number)
+                },
+            }
+        );
+    }
+</script>
+{% endblock content %}

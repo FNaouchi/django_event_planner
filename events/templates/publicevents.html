@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Public Events{% endblock %}
+{% block content %}
+  <header class="masthead text-center text-white">
+    <div class="masthead-content">
+      <div class="container">
+        <h3 class="masthead-heading mb-0">Public Events</h3>
+      </div>
+    </div>
+    <div class="bg-circle-1 bg-circle"></div>
+    <div class="bg-circle-2 bg-circle"></div>
+    <div class="bg-circle-3 bg-circle"></div>
+    <div class="bg-circle-4 bg-circle"></div>
+  </header>
+<div id="body-background">
+<br>
+<div class="container my-box">
+  <form action="{% url 'public-events' %}">
+    <div class="input-group mb-3 ">
+      <input type="text" class="form-control" placeholder="Search" aria-label="Search" name="q" value="{{request.GET.q}}">
+      <div class="input-group-append">
+        <button class="btn btn-outline-secondary" type="submit">Search</button>
+      </div>
+    </div>
+  </form>
+    {% for event in events %}
+      <a href="{% url 'detail-event' event.id %}">
+        <div class="col-md-12">
+            <div class="card my-card">
+                {% if event.logo %}
+                <img class="card-img-top" src="{{event.logo.url}}" alt="Lovely, isn't it?">
+                {% endif %}
+                <div class="card-body">
+                </a>
+                    <h5 class="card-title">{{event.name}}
+                    <h5 class="card-title float-right">
+                        {% if event.price == 0 %}
+                            It's FREE!
+                        {% else %}
+                           {{event.price}} KD
+                        {% endif %}
+                    </h5>
+                    </h5>
+                    <p class="card-text">
+                      <div class="float-left">
+                          {{event.description}}<br>
+                          Location: {{event.location}}<br>
+                          Available Tickets: {% if event.available_tickets == 0 %}We ran out of tickets!{% else %}{{event.available_tickets}}{% endif %}
+                      </div>
+                    </p>
+                </div>
+            </div>
+            <br>
+            <br>
+        </div>
+    {% endfor %}
+</div>
+</div>
+{% endblock %}

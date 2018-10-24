@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}{{event.name}}{% endblock %}
+{% block content %}
+  <header class="masthead text-center text-white">
+    <div class="masthead-content">
+      <div class="container">
+        <h3 class="masthead-heading mb-0">{{event.name}} Event</h3>
+      </div>
+    </div>
+    <div class="bg-circle-1 bg-circle"></div>
+    <div class="bg-circle-2 bg-circle"></div>
+    <div class="bg-circle-3 bg-circle"></div>
+    <div class="bg-circle-4 bg-circle"></div>
+  </header>
+<br>
+
+<br>
+<div class="container my-box mt-4">
+    <div class="card">
+    {% if event.logo %}
+      <img class="card-img-top" src="{{event.logo.url}}" alt="">
+    {% endif %}
+    <div class="card-body">
+      <h5 class="card-title">{{event.name}}
+      <h5 class="card-title float-right">
+        {% if event.price == 0 %}
+            It's FREE!
+        {% else %}
+           {{event.price}} KD
+        {% endif %}
+      </h5>
+      </h5>
+      <p class="card-text">{{event.description}}</p>
+      <p class="card-text">Location: {{event.location}}</p>
+      <p class="card-text">Available Tickets: {% if event.available_tickets == 0 %}We ran out of tickets!{% else %}{{event.available_tickets}}{% endif %}</p>
+      <p class="card-text">Date: {{event.date}}</p>
+      <p class="card-text">Time: {{event.starting_time}}</p>
+      <p class="card-text">Event Type: {{event.event_type}}</p>
+      <p class="card-text">Organized by: <a href="{% url 'my-events' event.owner.id %}">{{event.owner.username}}</a></p>
+    </div>
+    </ul>
+    {% if request.user == event.owner %}
+    <div class="card-body">
+      <div class="row text-center">
+        
+          <div class="col-md-6">
+              <a href="{% url 'update-event' event.id %}" class="btn btn-outline-primary btn-block">Update</a>
+          </div>
+          <div class="col-md-6">
+              <a href="{% url 'delete-event' event.id %}" class="btn btn-outline-danger btn-block">Delete</a>
+          </div>
+        {% else %}
+          <form action="{% url 'book-event' event.id %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+                {% if event.available_tickets == 0 %}
+                <input class = "btn btn-primary btn-xl rounded-pill m-5" disabled type="submit" value="Full">
+            {% else %}
+                <input type="number" name="seats" value="1" min="1" max={{event.available_tickets}} class="numberinput form-control">
+                <input class = "btn btn-primary btn-xl rounded-pill m-5" type="submit" value="Book Now!">
+            {% endif %}
+          </form>
+      </div>
+
+    {% endif %}
+    </div>
+    </div>
+
+    </div>
+    {% if  request.user == event.owner %}
+    <div class="container my-box mt-5 text-white">
+      <table class="table">
+        <thead>
+          <tr table-warning>
+            <th scope="col">Seats Booked</th>
+            <th scope="col">Account</th>
+            <th scope="col">Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for booking in bookings %}
+            <tr>
+              <td>{{booking.seats}}</td>
+              <td>{{booking.user.username}}</td>
+              <td>{{booking.user.first_name}}&nbsp;{{booking.user.last_name}}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <br>
+    {% endif %}
+
+</div>
+
+
+{% endblock content %}

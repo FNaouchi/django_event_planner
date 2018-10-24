@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Booked Events{% endblock %}
+{% block content %}
+  <header class="masthead text-center text-white">
+    <div class="masthead-content">
+      <div class="container">
+        <h3 class="masthead-heading mb-0">Booked Events</h3>
+          <a href="{% url 'public-events' %}" class="btn btn-primary btn-xl rounded-pill mt-5">View public events!</a>
+      </div>
+    </div>
+    <div class="bg-circle-1 bg-circle"></div>
+    <div class="bg-circle-2 bg-circle"></div>
+    <div class="bg-circle-3 bg-circle"></div>
+    <div class="bg-circle-4 bg-circle"></div>
+  </header>
+
+<div class="container my-box mt-4">
+    {% for booking in bookings %}
+      <a href="{% url 'detail-event' booking.event.id %}">
+        <div class="col-md-12">
+            <div class="card my-card">
+                <div class="card-body">
+                    <h5 class="card-title">{{booking.event.name}}
+                    </a>
+                    </h5>
+                    <p class="card-text">
+                      <div class="float-left">
+                          Number of booked tickets: {{booking.seats}}<br>
+                          Location: {{booking.event.location}}<br>
+                          Date: {{booking.event.date}}<br>
+                          Time: {{booking.event.starting_time}}<br>
+                      </div>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+    {% endfor %}
+</div>
+{% endblock %}
