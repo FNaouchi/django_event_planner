@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import (Login, Logout, user_follow, update_profile, Signup, home, history_events, profile_page, detail_event, book_event, my_events, booked_events, public_events, no_access, create_event, update_event, delete_event)
+from .views import (Login, Logout, user_follow, my_followers, update_profile, Signup, home, history_events, profile_page, detail_event, book_event, my_events, booked_events, public_events, no_access, create_event, update_event, delete_event)
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -12,6 +12,7 @@ urlpatterns = [
 	path('create/', create_event, name='create-event'),
 	path('update/<int:event_id>/', update_event, name='update-event'),
 	path('userprofile/<int:user_id>/', profile_page, name='user-profile'),
+	path('userfollowers/<int:user_id>/', my_followers, name='my-followers'),
 	path('updateprofile/<int:user_id>/', update_profile, name='update-profile'),
 	path('delete/<int:event_id>/', delete_event, name='delete-event'),
 	path('book/<int:event_id>/', book_event, name='book-event'),

@@ -4,7 +4,7 @@
 {% block content %}
   <header class="masthead text-center text-white">
     <div class="masthead-content">
-      <div class="jumbotron">
+      <div class="jumbotron" style="background-color: rgb(30,30,30,0.8);">
       <div class="container">
         <h3 class="masthead-heading mb-0">{{user.username}}'s Profile</h3>
         {% if profile.profile_picture %}
@@ -19,7 +19,7 @@
              <a href="{% url 'booked-events' %}" class="btn btn-outline-light btn-block">My Bookings</a>
             </div>
             <div class="col-md-4 mt-5">
-               <a href="#" class="btn btn-outline-light btn-block">Followers &nbsp;&nbsp;&nbsp;&nbsp;{{followers_number}}</a>
+               <a href="{% url 'my-followers' user.id %}" class="btn btn-outline-light btn-block">Followers &nbsp;&nbsp;&nbsp;&nbsp;{{followers_number}}</a>
             </div>
             <div class="col-md-4 mt-5">
                <a href="{% url 'history-events' user.id %}" class="btn btn-outline-light btn-block">History</a>

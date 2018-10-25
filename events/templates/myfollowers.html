@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}My Followers{% endblock %}
+
+{% block content %}
+<header class="masthead text-center text-white">
+  <div class="masthead-content">
+    <div class="container">
+        <div class="jumbotron" style="background-color: rgb(30,30,30,0.7);">
+          <h2 class="masthead-subheading mb-0">My Followers</h2>
+          <div class="container">
+            <div class="row m-5">
+              {% for profile in profiles %}
+                  <div class="text-white mt-5 col-md-4 text-center">
+                    <a href="{% url 'my-events' profile.user.id %}">
+                      {% if profile.profile_picture %}
+                        <img src="{{profile.profile_picture.url}}" class="rounded-circle " style="width:175px;height:150px;">
+                      {% else %}
+                        <img src="{% static 'img/03.jpg' %}" class="rounded-circle" style="width:175px;height:150px;">
+                      {% endif %}
+                    </a>
+                    <p class="">{{profile.user.username}}</p>
+                  </div>
+              {% endfor %}
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bg-circle-1 bg-circle"></div>
+  <div class="bg-circle-2 bg-circle"></div>
+  <div class="bg-circle-3 bg-circle"></div>
+  <div class="bg-circle-4 bg-circle"></div>
+</header>
+{% endblock content %}
+

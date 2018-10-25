@@ -115,8 +115,8 @@ def history_events(request, user_id):
         return redirect('login')
     user = User.objects.get(id=user_id)
     now = datetime.now()
-    bookings = Booking.objects.filter(user=user, event__date__lte=now)
-    events = Event.objects.filter(owner=user,date__lte=now)
+    bookings = Booking.objects.filter(user=user, event__date__lt=now)
+    events = Event.objects.filter(owner=user,date__lt=now)
     context = {
        "bookings": bookings,
        "user":user,
@@ -131,7 +131,7 @@ def profile_page(request, user_id):
     user = User.objects.get(id=user_id)
     profile = Profile.objects.get(user=user)
     bookings = Booking.objects.filter(user=user, event__date__gte=now)
-    history = Booking.objects.filter(user=user, event__date__lte=now)
+    history = Booking.objects.filter(user=user, event__date__lt=now)
     events = Event.objects.filter(owner=user,date__gte=now)
     followers = Following.objects.filter(profile__user=user)
     context = {
@@ -204,7 +204,7 @@ def update_profile(request, user_id):
     user = User.objects.get(id=user_id)
     profile = Profile.objects.get(user=user)
     form_a = ProfileForm(instance=profile)
-    form_b = UserUpdate(instance=profile)
+    form_b = UserUpdate(instance=user)
     if request.method == "POST":
         form_a = ProfileForm(request.POST, request.FILES, instance=profile)
         form_b = UserUpdate(request.POST, instance=user)
@@ -289,5 +289,22 @@ def user_follow(request, user_id):
     }
     return JsonResponse(response, safe=False)
 
-
+def my_followers(request, user_id):
+    if request.user.is_anonymous:
+        return redirect('home')
+    user = User.objects.get(id=user_id)
+    if request.user != user:
+        return redirect('public-events')
+    
+    followers = Following.objects.filter(profile__user=user)
+    users = []
+    for follower in followers:
+        users.append(follower.follower)
+    profiles = []
+    for someone in users:
+        profiles.append(Profile.objects.get(user=someone))
+    context = {
+        "profiles": profiles,
+    }
+    return render(request, 'myfollowers.html', context)
 
